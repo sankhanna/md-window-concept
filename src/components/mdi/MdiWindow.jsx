@@ -5,7 +5,7 @@ import ModuleContent from '../../modules/registry.jsx'
 // A single MDI child window: draggable by its title bar, resizable from the
 // bottom-right grip, focus-on-click (z-index bump), minimize / maximize / close,
 // and a ⤢ that detaches it into a real OS window (the earlier pop-out behaviour).
-export default function MdiWindow({ win, session, onFocus, onChange, onClose, onMinimize, onToggleMax, onPopOut }) {
+export default function MdiWindow({ win, session, onFocus, onChange, onClose, onMinimize, onToggleMax }) {
   const mod = MODULES.find((m) => m.key === win.key) || { label: win.key, icon: '🔲' }
   const gesture = useRef(null)
 
@@ -57,7 +57,6 @@ export default function MdiWindow({ win, session, onFocus, onChange, onClose, on
           <span className="mdi__icon">{mod.icon}</span> {mod.label}
         </span>
         <span className="mdi__controls">
-          <button title="Pop out to OS window" onClick={(e) => { e.stopPropagation(); onPopOut(win.key) }}>⤢</button>
           <button title="Minimize" onClick={(e) => { e.stopPropagation(); onMinimize(win.id) }}>—</button>
           <button title={win.maximized ? 'Restore' : 'Maximize'} onClick={(e) => { e.stopPropagation(); onToggleMax(win.id) }}>▢</button>
           <button className="mdi__close" title="Close" onClick={(e) => { e.stopPropagation(); onClose(win.id) }}>✕</button>

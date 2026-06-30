@@ -27,7 +27,6 @@ export default function App() {
 }
 
 function Shell({ session }) {
-  const { popOut } = session
   const mdi = useMdi()
   const openKeys = new Set(mdi.wins.map((w) => w.key))
   const visible = mdi.wins.filter((w) => !w.minimized)
@@ -43,20 +42,13 @@ function Shell({ session }) {
                 <span className="navrow__icon">{m.icon}</span>
                 {m.label}
               </button>
-              <button
-                className="navrow__pop"
-                title={`Pop ${m.label} into its own OS window`}
-                onClick={() => popOut(m.key)}
-              >
-                ⤢
-              </button>
             </div>
           ))}
         </nav>
         <div className="sidebar__foot">
           Each click opens a <strong>new MDI child window</strong> — open the same module many
-          times. Drag the title bar, resize from the corner, double-click to maximize.
-          <strong>⤢</strong> detaches it into a real OS window. All windows share one socket.
+          times. Drag the title bar, resize from the corner, double-click to maximize. All windows
+          share one socket.
         </div>
       </aside>
 
@@ -109,7 +101,6 @@ function Shell({ session }) {
               onClose={mdi.close}
               onMinimize={mdi.minimize}
               onToggleMax={mdi.toggleMax}
-              onPopOut={popOut}
             />
           ))}
         </div>

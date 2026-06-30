@@ -1,0 +1,21 @@
+{
+  "name": "md-window-concept",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Multi-window prototype for Zillit — one socket, many windows (Approach 4: in-app panes + pop-outs)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "socket.io-client": "^4.7.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

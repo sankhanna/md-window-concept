@@ -4,6 +4,19 @@
 import { io } from 'socket.io-client'
 import { SOCKET_URL, MODULEDATA } from '../config.js'
 
+// Print every socket event to the browser console, with a timestamp + payload.
+let seq = 0
+function logSocket(event, args) {
+  const ts = new Date().toISOString().slice(11, 23)
+  console.log(
+    `%c[socket]%c #${++seq} ${ts} %c${event}`,
+    'color:#f6a02a;font-weight:bold',
+    'color:#8aa1b6',
+    'color:#5aa2ff;font-weight:bold',
+    ...args,
+  )
+}
+
 export class SocketHub {
   constructor(bus) {
     this.bus = bus
@@ -27,6 +40,7 @@ export class SocketHub {
         socketId: this.socket.id,
         ownerId: this.bus.windowId,
       })
+      logSocket('connect', [{ id: this.socket.id }])
       // Mirror SocketManager: announce presence on connect.
       this.socket.emit('user:join', {}, null, () => {})
       this._log('connect', { id: this.socket.id })
@@ -35,15 +49,19 @@ export class SocketHub {
     this.socket.on('disconnect', (reason) => {
       this.connected = false
       this.bus.broadcastOwnerStatus({ connected: false, ownerId: this.bus.windowId })
+      logSocket('disconnect', [{ reason }])
       this._log('disconnect', { reason })
     })
 
     this.socket.on('connect_error', (err) => {
+      logSocket('connect_error', [{ message: err?.message || String(err) }])
       this._log('connect_error', { message: err?.message || String(err) })
     })
 
-    // Fan EVERY inbound socket event out to all windows over the bus.
+    // Fan EVERY inbound socket event out to all windows over the bus,
+    // and print it to the browser console.
     this.socket.onAny((event, ...args) => {
+      logSocket(event, args)
       this.bus.fanoutSocketEvent(event, args)
     })
   }

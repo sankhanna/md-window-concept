@@ -67,6 +67,21 @@ the real `zillit_web` section structure & labels — see `src/modules/`:
 `src/modules/registry.jsx` maps a module key → component and adds the slim
 shared-socket status strip at the bottom of every window.
 
+### Two in-window patterns for sub-screens
+
+Both are **scoped to their own MDI child window** — other windows stay
+interactive, and you can have one open in each window at once.
+
+- **Wizard screen (Purchase Order → Raise PO).** Takes over the whole window:
+  the register is replaced by a 3-step wizard (Vendor & Dept → Line Item w/ live
+  amount → Review) with a `← Purchase Orders` back link and a pinned footer
+  (`src/components/Stepper.jsx`). *Create PO* prepends the PO and returns to the
+  register. Use this for multi-step create/edit flows.
+- **Popup dialog (Calendar → + New Event).** A centered modal overlay scoped to
+  the window via `src/components/WindowModal.jsx` (renders absolutely inside the
+  module container, so its backdrop covers only that window). *Create Event*
+  drops the event onto the month grid. Use this for quick, single-screen forms.
+
 ## The connection mechanism
 
 One window is the **owner** (holds the single socket). Every other window is a

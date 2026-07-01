@@ -1,12 +1,12 @@
 import { useRef } from 'react'
-import { MODULES } from '../../config.js'
+import { MODULE_META } from '../../config.js'
 import ModuleContent from '../../modules/registry.jsx'
 
 // A single MDI child window: draggable by its title bar, resizable from the
 // bottom-right grip, focus-on-click (z-index bump), minimize / maximize / close,
 // and a ⤢ that detaches it into a real OS window (the earlier pop-out behaviour).
-export default function MdiWindow({ win, session, onFocus, onChange, onClose, onMinimize, onToggleMax }) {
-  const mod = MODULES.find((m) => m.key === win.key) || { label: win.key, icon: '🔲' }
+export default function MdiWindow({ win, session, openModule, onFocus, onChange, onClose, onMinimize, onToggleMax }) {
+  const mod = MODULE_META[win.key] || { label: win.key, icon: '🔲' }
   const gesture = useRef(null)
 
   const startDrag = (e) => {
@@ -63,7 +63,7 @@ export default function MdiWindow({ win, session, onFocus, onChange, onClose, on
         </span>
       </div>
       <div className="mdi__body">
-        <ModuleContent moduleKey={win.key} session={session} />
+        <ModuleContent moduleKey={win.key} session={session} openModule={openModule} />
       </div>
       {!win.maximized && <div className="mdi__grip" onMouseDown={startResize} />}
     </div>

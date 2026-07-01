@@ -1,4 +1,5 @@
-import { MODULES } from './config.js'
+import { useState } from 'react'
+import { MENU, MODULE_META } from './config.js'
 import { useWindowSession } from './useWindowSession.js'
 import ModuleContent from './modules/registry.jsx'
 import MdiWindow from './components/mdi/MdiWindow.jsx'
@@ -28,27 +29,52 @@ export default function App() {
 
 function Shell({ session }) {
   const mdi = useMdi()
+  const [toast, setToast] = useState(null)
+  const [collapsed, setCollapsed] = useState(false)
   const openKeys = new Set(mdi.wins.map((w) => w.key))
   const visible = mdi.wins.filter((w) => !w.minimized)
+  const activeKey = mdi.wins.find((w) => w.focused && !w.minimized)?.key
+
+  const flash = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2200) }
+  const runAction = (action) => {
+    if (action === 'pin') flash('Pinned to Start')
+    else if (action === 'logout') flash('Logout (prototype — session kept)')
+  }
 
   return (
-    <div className="shell">
+    <div className={`shell ${collapsed ? 'shell--collapsed' : ''}`}>
       <aside className="sidebar">
-        <div className="brand">Zillit</div>
+        <button
+          className="sidebar__toggle"
+          onClick={() => setCollapsed((c) => !c)}
+          title={collapsed ? 'Expand menu' : 'Collapse menu'}
+        >
+          {collapsed ? '›' : '‹'}
+        </button>
+        <div className="brand"><span className="brand__logo">{collapsed ? 'Z' : 'Zillit'}</span></div>
         <nav>
-          {MODULES.map((m) => (
-            <div key={m.key} className={`navrow ${openKeys.has(m.key) ? 'navrow--open' : ''}`}>
-              <button className="navrow__main" onClick={() => mdi.open(m.key)}>
-                <span className="navrow__icon">{m.icon}</span>
-                {m.label}
-              </button>
-            </div>
-          ))}
+          {MENU.map((item) => {
+            const meta = MODULE_META[item.key] || item
+            const isOpen = !item.action && openKeys.has(item.key)
+            const isActive = !item.action && item.key === activeKey
+            return (
+              <div key={item.key} className={`navrow ${isActive ? 'navrow--active' : isOpen ? 'navrow--open' : ''} ${item.key === 'logout' ? 'navrow--logout' : ''}`}>
+                <button
+                  className="navrow__main"
+                  title={meta.label}
+                  onClick={() => (item.action ? runAction(item.action) : mdi.open(item.key))}
+                >
+                  <span className="navrow__icon">{meta.icon}</span>
+                  <span className="navrow__label">{meta.label}</span>
+                  {item.badge && <span className="navrow__badge">{item.badge}</span>}
+                </button>
+              </div>
+            )
+          })}
         </nav>
         <div className="sidebar__foot">
-          Each click opens a <strong>new MDI child window</strong> — open the same module many
-          times. Drag the title bar, resize from the corner, double-click to maximize. All windows
-          share one socket.
+          Content items open as <strong>MDI child windows</strong> (drag, resize, double-click to
+          maximize; open several at once). All windows share one socket.
         </div>
       </aside>
 
@@ -64,7 +90,7 @@ function Shell({ session }) {
                 mdi.wins.forEach((w) => { counts[w.key] = (counts[w.key] || 0) + 1 })
                 const seen = {}
                 return mdi.wins.map((w) => {
-                  const mod = MODULES.find((m) => m.key === w.key)
+                  const mod = MODULE_META[w.key]
                   seen[w.key] = (seen[w.key] || 0) + 1
                   const label = `${mod?.label}${counts[w.key] > 1 ? ` ${seen[w.key]}` : ''}`
                   return (
@@ -101,10 +127,12 @@ function Shell({ session }) {
               onClose={mdi.close}
               onMinimize={mdi.minimize}
               onToggleMax={mdi.toggleMax}
+              openModule={mdi.open}
             />
           ))}
         </div>
       </main>
+      {toast && <div className="toast">{toast}</div>}
     </div>
   )
 }

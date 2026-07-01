@@ -1,6 +1,8 @@
-// Mock of the Film Tools grid (zillit_web/src/pages/FilmTools/FilmTools.jsx).
+// Mock of the Tools grid (zillit_web/src/pages/FilmTools/FilmTools.jsx).
 // Tool names taken from the real sectionList, sorted alphabetically as the app does.
+// A `module` key makes a card open that module in its own MDI window.
 const TOOLS = [
+  { name: 'Account Hub', count: 0, module: 'accounthub' },
   { name: 'Accounts', count: 0 },
   { name: 'Asset Report', count: 3 },
   { name: 'Background Casting', count: 0 },
@@ -28,7 +30,7 @@ const TOOLS = [
   { name: 'Weather', count: 0 },
 ]
 
-export default function FilmTools() {
+export default function FilmTools({ openModule }) {
   return (
     <div className="mod mod-tools">
       <div className="tools__bar">
@@ -37,7 +39,12 @@ export default function FilmTools() {
       <div className="mod-scroll">
         <div className="tools__grid">
           {TOOLS.map((t) => (
-            <button key={t.name} className="toolcard">
+            <button
+              key={t.name}
+              className={`toolcard ${t.module ? 'toolcard--live' : ''}`}
+              onClick={() => t.module && openModule?.(t.module)}
+              title={t.module ? `Open ${t.name}` : undefined}
+            >
               <span className="toolcard__name">{t.name}</span>
               {t.count > 0 && <span className="toolcard__badge">{t.count}</span>}
               <span className="toolcard__info">i</span>

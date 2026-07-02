@@ -94,14 +94,25 @@ function Shell({ session }) {
                   seen[w.key] = (seen[w.key] || 0) + 1
                   const label = `${mod?.label}${counts[w.key] > 1 ? ` ${seen[w.key]}` : ''}`
                   return (
-                    <button
+                    <div
                       key={w.id}
                       className={`taskbar__item ${w.focused ? 'taskbar__item--active' : ''} ${w.minimized ? 'taskbar__item--min' : ''}`}
-                      title={w.minimized ? `${label} (minimized) — click to restore` : `${label} — click to bring to front`}
-                      onClick={() => mdi.restore(w.id)}
                     >
-                      <span>{mod?.icon}</span> {label}
-                    </button>
+                      <button
+                        className="taskbar__item-main"
+                        title={w.minimized ? `${label} (minimized) — click to restore` : `${label} — click to bring to front`}
+                        onClick={() => mdi.restore(w.id)}
+                      >
+                        <span>{mod?.icon}</span> {label}
+                      </button>
+                      <button
+                        className="taskbar__close"
+                        title={`Close ${label}`}
+                        onClick={(e) => { e.stopPropagation(); mdi.close(w.id) }}
+                      >
+                        ✕
+                      </button>
+                    </div>
                   )
                 })
               })()}

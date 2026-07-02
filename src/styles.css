@@ -226,25 +226,45 @@ button { font: inherit; cursor: pointer; }
   opacity: 0.6;
 }
 
-/* ---- minimized-window chips (in the toolbar) ---- */
+/* ---- window switcher chips (in the toolbar) ---- */
 .taskbar__item {
+  display: flex;
+  align-items: stretch;
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.taskbar__item:hover { border-color: var(--accent); }
+.taskbar__item-main {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--panel2);
-  border: 1px solid var(--line);
+  background: transparent;
+  border: none;
   color: var(--text);
-  border-radius: 7px;
-  padding: 4px 10px;
+  padding: 4px 6px 4px 10px;
   font-size: 12px;
   font-weight: 600;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
-.taskbar__item:hover { border-color: var(--accent); }
-.taskbar__item--active { border-color: var(--accent); color: var(--accent); background: rgba(246,160,42,0.14); }
-.taskbar__item--min { opacity: 0.55; font-weight: 500; }
-.taskbar__item--min::before { content: '—'; color: var(--mut); margin-right: -2px; }
+.taskbar__close {
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--line);
+  color: var(--mut);
+  padding: 0 8px;
+  font-size: 11px;
+  line-height: 1;
+}
+.taskbar__close:hover { background: var(--off); color: #fff; }
+.taskbar__item--active { border-color: var(--accent); background: rgba(246,160,42,0.14); }
+.taskbar__item--active .taskbar__item-main { color: var(--accent); }
+.taskbar__item--active .taskbar__close { border-left-color: rgba(246,160,42,0.35); }
+.taskbar__item--min { opacity: 0.6; }
+.taskbar__item--min .taskbar__item-main { font-weight: 500; }
+.taskbar__item--min .taskbar__item-main::before { content: '—'; color: var(--mut); margin-right: 2px; }
 
 /* ---- pop-out ---- */
 .popout { height: 100vh; overflow: auto; }

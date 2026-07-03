@@ -21,10 +21,21 @@ export function useMdi() {
     })
   }, [])
 
-  // Always opens a NEW window for the module — multiple instances are allowed.
+  // Open-or-focus: if a window for this module is already open, bring it to the
+  // front (restoring it if minimized) instead of opening a duplicate. Only opens
+  // a new window when none exists for the module.
   const open = useCallback((key) => {
     setWins((ws) => {
       const z = nextZ(ws)
+      const existing = ws.find((w) => w.key === key)
+      if (existing) {
+        return ws.map((w) => ({
+          ...w,
+          z: w.id === existing.id ? z : w.z,
+          minimized: w.id === existing.id ? false : w.minimized,
+          focused: w.id === existing.id,
+        }))
+      }
       const offset = (ws.length % 6) * 28
       return [
         ...ws.map((w) => ({ ...w, focused: false })),

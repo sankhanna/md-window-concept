@@ -15,6 +15,7 @@ import Help from './Help.jsx'
 import Invoices from './Invoices.jsx'
 import ProductionCards from './ProductionCards.jsx'
 import GenericSection from './GenericSection.jsx'
+import { TOOLS } from '../config.js'
 
 // Maps a module key (config.js MODULE_META) to its content component.
 const REGISTRY = {
@@ -41,6 +42,12 @@ const REGISTRY = {
   costreport: GenericSection,
   periodclose: GenericSection,
   vendors: GenericSection,
+}
+
+// Every Tools-grid card opens a window. Ones without a dedicated component above
+// fall back to a titled section window.
+for (const t of TOOLS) {
+  if (!REGISTRY[t.key]) REGISTRY[t.key] = GenericSection
 }
 
 // Renders the module-specific content plus a slim shared-socket status strip,

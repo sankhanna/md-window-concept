@@ -16,10 +16,44 @@ export const MODULEDATA =
   import.meta.env.VITE_MODULEDATA ||
   'e2153034c9ce2eb53a890f8724a41fd1048dd2790db5c3c7336936afef78fd15e5b742d2eec1b809b902c5d23e2e6884105f1040762058d55137b9aedc29150dc9cedcd6f3e7433bb04502a09e034546f7bb3fc8234e3cfd74ae425f12bf2e7911207802c41895297be55ee742cb3c3a84c42ace7647a2e413c136f5dbdc953caf19f1e63a4f9b147a0419a0b43c02667fcadada55d17923f72b8b88f40eef041737743f750dc0ee6ecf9994b6891dccfe378bf166910a1d39e3eedfcc05f67354c07a9be2fbc599a5986df340dfa9a3476287433e41bbd5759cb03794b9edbd'
 
+// The Tools grid — every card opens an MDI window. `key` doubles as the module
+// key (used for the window title, registry lookup, and open-or-focus). Cards that
+// reuse an existing module key (accounthub, purchaseorder, info) open that real
+// tool; all others open a titled section window (GenericSection). `count` is an
+// optional badge.
+export const TOOLS = [
+  { key: 'accounthub', label: 'Account Hub', icon: '🏦' },
+  { key: 'tool_accounts', label: 'Accounts', icon: '📒' },
+  { key: 'tool_asset_report', label: 'Asset Report', icon: '📦', count: 3 },
+  { key: 'tool_bg_casting', label: 'Background Casting', icon: '🎭' },
+  { key: 'tool_bg_wardrobe', label: 'Background Wardrobe', icon: '👔' },
+  { key: 'tool_catering', label: 'Catering', icon: '🍽️', count: 1 },
+  { key: 'tool_confidential', label: 'Confidential Info', icon: '🔐' },
+  { key: 'tool_continuity', label: 'Continuity', icon: '🎞️', count: 5 },
+  { key: 'tool_dept_budget', label: 'Department Budget', icon: '📊' },
+  { key: 'tool_forms', label: 'Forms & Signature', icon: '✍️', count: 2 },
+  { key: 'tool_full_budget', label: 'Full Budget', icon: '💷' },
+  { key: 'tool_crew_list', label: 'Generate Crew List', icon: '👥' },
+  { key: 'info', label: 'Info', icon: 'ℹ️' },
+  { key: 'tool_location', label: 'Location', icon: '📍', count: 4 },
+  { key: 'tool_main_casting', label: 'Main Casting', icon: '🌟' },
+  { key: 'tool_main_wardrobe', label: 'Main Wardrobe', icon: '🧥' },
+  { key: 'tool_permission_grid', label: 'Permission Grid', icon: '🔑' },
+  { key: 'tool_preprod_cal', label: 'Pre-Production Calendar', icon: '🗓️' },
+  { key: 'tool_prod_cal', label: 'Production Calendar', icon: '📅', count: 1 },
+  { key: 'purchaseorder', label: 'Purchase Order', icon: '🛒', count: 7 },
+  { key: 'tool_schedule_dist', label: 'Schedule Distribution', icon: '📤' },
+  { key: 'tool_script_dist', label: 'Script Distribution', icon: '📜' },
+  { key: 'tool_script_notes', label: 'Script Notes', icon: '🗒️' },
+  { key: 'tool_transport', label: 'Transportation', icon: '🚚', count: 2 },
+  { key: 'tool_wardrobe', label: 'Wardrobe', icon: '👗' },
+  { key: 'tool_weather', label: 'Weather', icon: '🌦️' },
+]
+
 // Metadata (label + icon) for EVERY openable module. Used for window titles and
 // the top-bar switcher chips — includes modules that aren't top-level menu items
 // but can be opened from elsewhere (e.g. Account Hub from the Tools grid).
-export const MODULE_META = {
+const BASE_META = {
   home: { label: 'Home', icon: '🏠' },
   email: { label: 'Email', icon: '✉️' },
   tools: { label: 'Tools', icon: '🛠️' },
@@ -46,6 +80,11 @@ export const MODULE_META = {
   calendar: { label: 'Calendar', icon: '📅' },
   callsheet: { label: 'Call Sheet', icon: '🎬' },
 }
+
+// Merge Tools-grid metadata in, but let BASE_META win for shared keys (so real
+// tools keep their canonical label/icon).
+const TOOL_META = Object.fromEntries(TOOLS.map((t) => [t.key, { label: t.label, icon: t.icon }]))
+export const MODULE_META = { ...TOOL_META, ...BASE_META }
 
 // The left menu, in display order. Items with `action` run a utility action
 // instead of opening a window; `badge` shows an unread count.
